@@ -1,16 +1,5 @@
 import React,{useState,useEffect}from'react';import{supabase}from'../lib/supabase.js';import{requireAuth,getUser}from'../lib/auth.js';import*as S from'../styles.js';
-export default function Review(){
-  const userId=window.location.pathname.split('/')[2];
-  const[rating,setRating]=useState(5);const[comment,setComment]=useState('');const[service,setService]=useState('');const[done,setDone]=useState(false);
-  useEffect(()=>requireAuth(window.location.href),[]);
-  const submit=async()=>{const u=getUser();if(!u)return;await supabase.from('trust_reviews').insert({reviewer_id:u.sub,reviewed_id:userId,rating,comment,service});await supabase.from('trust_profiles').upsert({user_id:userId,score:Math.min(100,50+rating*5),level:rating>=4?'trusted':rating>=3?'new':'cautious'},{onConflict:'user_id'});setDone(true);};
-  if(done)return React.createElement('div',{style:S.page},React.createElement('div',{style:{...S.card,textAlign:'center'}},React.createElement('p',{style:{color:'#22c55e',fontSize:'1.2rem'}},'Review submitted!')));
-  return React.createElement('div',{style:S.page},React.createElement('h1',{style:S.h1},'Leave a Review'),
-    React.createElement('div',{style:S.card},
-      React.createElement('div',{style:{marginBottom:'1rem'}},React.createElement('label',{style:S.muted},'Rating'),React.createElement('div',{style:{display:'flex',gap:'0.5rem',marginTop:'0.5rem'}},[1,2,3,4,5].map(n=>React.createElement('button',{key:n,style:{...S.btn,background:n<=rating?'#f59e0b':'#1e293b',padding:'0.4rem 0.8rem'},onClick:()=>setRating(n)},'★')))),
-      React.createElement('div',{style:{marginBottom:'1rem'}},React.createElement('label',{style:S.muted},'Service'),React.createElement('input',{style:{...S.input,marginTop:'0.3rem'},value:service,onChange:e=>setService(e.target.value),placeholder:'IT-S Cloud, IT-S Learn...'})),
-      React.createElement('div',{style:{marginBottom:'1.5rem'}},React.createElement('label',{style:S.muted},'Comment'),React.createElement('textarea',{style:{...S.input,marginTop:'0.3rem',minHeight:'100px',resize:'vertical'},value:comment,onChange:e=>setComment(e.target.value)})),
-      React.createElement('button',{style:S.btn,onClick:submit},'Submit Review')
-    )
-  );
-}
+export default function Review(){const uid=window.location.pathname.split('/')[2];const[rat,setRat]=useState(5);const[com,setCom]=useState('');const[svc,setSvc]=useState('');const[done,setDone]=useState(false);useEffect(()=>requireAuth(window.location.href),[]);
+const sub=async()=>{const u=getUser();if(!u)return;await supabase.from('trust_reviews').insert({reviewer_id:u.sub,reviewed_id:uid,rating:rat,comment:com,service:svc});await supabase.from('trust_profiles').upsert({user_id:uid,score:Math.min(100,50+rat*5),level:rat>=4?'trusted':rat>=3?'new':'cautious'},{onConflict:'user_id'});setDone(true);};
+if(done)return React.createElement('div',{style:S.page},React.createElement('div',{style:{...S.card,textAlign:'center'}},React.createElement('p',{style:{color:'#22c55e',fontSize:'1.2rem'}},'Review submitted! ✓')));
+return React.createElement('div',{style:S.page},React.createElement('h1',{style:S.h1},'Leave a Review'),React.createElement('div',{style:S.card},React.createElement('div',{style:{marginBottom:'1rem'}},React.createElement('label',{style:S.muted},'Rating'),React.createElement('div',{style:{display:'flex',gap:'0.5rem',marginTop:'0.5rem'}},[1,2,3,4,5].map(n=>React.createElement('button',{key:n,style:{...S.btn,background:n<=rat?'#f59e0b':'#1e293b',padding:'0.4rem 0.8rem'},onClick:()=>setRat(n)},'★')))),React.createElement('div',{style:{marginBottom:'1rem'}},React.createElement('label',{style:S.muted},'Service'),React.createElement('input',{style:{...S.input,marginTop:'0.3rem'},value:svc,onChange:e=>setSvc(e.target.value),placeholder:'IT-S Cloud, IT-S Learn...'})),React.createElement('div',{style:{marginBottom:'1.5rem'}},React.createElement('label',{style:S.muted},'Comment'),React.createElement('textarea',{style:{...S.input,marginTop:'0.3rem',minHeight:'100px',resize:'vertical'},value:com,onChange:e=>setCom(e.target.value)})),React.createElement('button',{style:S.btn,onClick:sub},'Submit')));}
