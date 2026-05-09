@@ -1,0 +1,7 @@
+import React,{useEffect,useState}from'react';import{supabase}from'../lib/supabase.js';import*as S from'../styles.js';
+export default function Leaderboard(){
+  const[profiles,setProfiles]=useState([]);
+  useEffect(()=>{supabase.from('trust_profiles').select('*').order('score',{ascending:false}).limit(20).then(({data})=>setProfiles(data||[]));  },[]);
+  const scoreColor=s=>s>=80?'#22c55e':s>=50?'#f59e0b':'#dc2626';
+  return React.createElement('div',{style:S.page},React.createElement('h1',{style:S.h1},'Trust Leaderboard'),profiles.length===0&&React.createElement('div',{style:S.card},React.createElement('p',{style:S.muted},'No profiles yet.')),profiles.map((p,i)=>React.createElement('div',{key:p.id,style:{...S.card,display:'flex',justifyContent:'space-between',alignItems:'center'}},React.createElement('div',{style:{display:'flex',gap:'1rem',alignItems:'center'}},React.createElement('span',{style:{color:'#64748b',fontWeight:700,width:'24px'}},i+1),React.createElement('div',null,React.createElement('p',{style:{color:'#e2e8f0',fontWeight:600}},p.level+' user'),React.createElement('p',{style:S.muted},p.verified?'✓ Verified':'Unverified'))),React.createElement('span',{style:{color:scoreColor(p.score),fontWeight:700,fontSize:'1.2rem'}},p.score))));
+}
